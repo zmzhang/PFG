@@ -6,7 +6,6 @@
 #include <ctime>
 #include "formula.h"
 #include "temp.h"
-#include <chrono>
 #include <sstream>
 #include <fstream>
 #include <iomanip>
@@ -28,14 +27,14 @@ double mz(double currentmass,int finalcharge, int currentcharge, char *agentform
 		agentMass = ELECTRON_MASS;
 	}
 	else{
-		agentMass = elementmass(agentformula);//只是某个元素的质量
+		agentMass = elementmass(agentformula);
 		agentMass = agentMass - agentcharge*ELECTRON_MASS;
 	}
 	int agentCount = currentcharge/agentcharge;
 	if (currentcharge != 0)
 	{
 		massMo = currentmass * abs(currentcharge) - agentMass * agentCount;
-		currentmass = massMo;//计算中性分子的质量
+		currentmass = massMo;
 	}
 	else
 	{
@@ -43,42 +42,18 @@ double mz(double currentmass,int finalcharge, int currentcharge, char *agentform
 	}
 	if (finalcharge == 0)
 	{
-		//求得中性分子质量
 		return currentmass;
 	}
-	//计算最终带电分子质量
 	agentCount = finalcharge / agentcharge;
 
 	currentmass = (currentmass + agentMass * agentCount) / abs(finalcharge);
 	return currentmass;
 }
-// int count(char *string, char *element, int groupIsotopes=1)
-// {
-// 	int atomcount = 0;
-// 	composition *getcomp;
-// 	getcomp = elementpattern(string, groupIsotopes);
-// 	for (int i = 0; i < getcomp->elcount; i++)
-// 	{
-// 		if (strcmp(element, getcomp->comp[i]) == 0){
-// 			atomcount = getcomp->atomcount[i];
-// 			break;
-// 		}
-// 	}
-// 	return atomcount;
-// }
 
 int frules(char *string, int countC, int countH, int countO, int countN, int countP, int countS, double rdbevalue, vector<char*> rules)
 	//Check formula rules for a given compound.
 {
-// 	int countC = count(string, "C", 1);
-// 	int countH = count(string, "H", 1);
-// 	int countO = count(string, "O", 1);
-// 	int countN = count(string, "N", 1);
-// 	int countP = count(string, "P", 1);
-// 	int countS = count(string, "S", 1);
-
 	int size = rules.size();
-/*	double rdbevalue = rdbe(string);*/
 
 	if(countC){
 		double ratioHC = countH / 1.000 / countC;
@@ -94,26 +69,6 @@ int frules(char *string, int countC, int countH, int countO, int countN, int cou
 					return false;
 				}
 			}
-			//if(strcmp( rules[i], "NC" ) == 0 ){
-			//	if (ratioHC > NC){
-			//		return false;
-			//	}
-			//}
-			//if(strcmp( rules[i], "OC" ) == 0 ){
-			//	if (ratioHC > OC){
-			//		return false;
-			//	}
-			//}
-			//if(strcmp( rules[i], "PC" ) == 0 ){
-			//	if (ratioHC > PC){
-			//		return false;
-			//	}
-			//}
-			//if(strcmp( rules[i], "SC" ) == 0 ){
-			//	if (ratioHC > SC){
-			//		return false;
-			//	}
-			//}
 
 			if (strcmp( rules[i], "NOPSC" ) == 0 ){
 				if (ratioNC > GLNOPSC[0] || ratioOC > GLNOPSC[1] || ratioPC > GLNOPSC[2] || ratioSC > GLNOPSC[3]){
@@ -150,8 +105,6 @@ int frules(char *string, int countC, int countH, int countO, int countN, int cou
 					return false;
 				}
 			}
-			//NOSP 规则
-
 			if (strcmp(rules[i], "RDBE") ==0 ){
 				if (rdbevalue < GLRDBE[0] || rdbevalue > GLRDBE[1]){
 					return false;
@@ -197,28 +150,43 @@ vector<char*> split_char(string str, char delimiter) {
 }
 void help()
 {
-	cout<<"PFG is a program to calculate the possible elemental compositions for a given mass." <<endl
+	cout<<"PFG is a program to calculate the possible elemental compositions for a given mass." << endl
+		<<"Authors: Mingjing Zhang & Zhimin Zhang" << endl
 		<<"usage: PFG valid command line options are: " << endl
 		<<"-h or --help       The help screen." <<endl
 		<<"-m mass            Set mass." <<endl
 		<<"-t tol             Set tolerance to tol 'ppm' ( default 5 )." << endl
 		<<"-c charge          Set charge to be calculated." << endl
-		<<"--X a-b            Set atom range a (min) to b (max) of element X." << endl
+		<<"-r rules           Set rules to constrain formulas"<<endl
+		<<"--X a-b            Set atom range a (min) to b (max) of element X. "<<endl
+		<<"                   some of the valid elements:" << endl
+		<<"          X           key      mass(6 decimals shown)" << endl
+		<<"     ----------------------------------------------------" << endl
+		<<"          C           --C           12.000000" << endl
+		<<"          13C         --13C         13.003355"<<endl
+		<<"          H           --H           1.007825" << endl
+		<<"          D           --D           2.014102" <<endl
+		<<"          N           --N           14.003074" << endl
+		<<"          15N         --15N         15.000109"<<endl
+		<<"          O           --O           15.994915" << endl
+		<<"          P           --P           30.973762" << endl
+		<<"          S           --S           31.972071" << endl
+		<<"          F           --F           18.998403" << endl
+		<<"          Cl          --Cl          34.968853" << endl
+		<<"          Br          --Br          78.918338" << endl
+		<<"          I           --I           126.904468" << endl
+		<<"          Si          --Si          27.976927" << endl
+		<<"          Na          --Na          22.989770" << endl
+		<<"          K           --K           38.963707" << endl
 		<<"--agentformula af  Set agent formula." << endl
-		<<"--agentcharge  ac  Set the charge of the agent formula." << endl;
+		<<"--agentcharge  ac  Set the charge of the agent formula." << endl
+		<< "for example:"<<endl
+		<<"PFG  'Mesuximide' -m 203.0946 -t 5 --C 0-20 --H 0-40 --O 0-5 --N 0-5"<<endl
+		<<"the result were stored in the result.txt"<<endl;
 }
 
 int main(int argc, char* argv[])
 {
-	//cout<<"PFG is a program to calculate the possible elemental compositions for a given mass." <<endl
-	//	<<"usage: PFG valid command line options are: " << endl
-	//	<<"-h or --help       The help screen." <<endl
-	//	<<"-m mass            Set mass." <<endl
-	//	<<"-t tol             Set tolerance to tol 'ppm' ( default 5 )." << endl
-	//	<<"-c charge          Set charge to be calculated." << endl
-	//	<<"--X a-b            Set atom range a (min) to b (max) of element X." << endl
-	//	<<"--agentformula af  Set agent formula." << endl
-	//	<<"--agentcharge  ac  Set the charge of the agent formula." << endl;
 	stringstream ss;
 	string _help;
 	string tol;
@@ -227,14 +195,13 @@ int main(int argc, char* argv[])
 	string af;
 	string ac;
 	string _cmass;
-	string C, H, N, O, P, S, Na, Si, F, Cl, Br, I, K;
+	string C, H, N, O, P, S, Na, Si, F, Cl, Br, I, K, CX, D, NX;
 
 	vector<char*> compositions;
 	vector<int> mini;
 	vector<int> maxi;
 
 	GetOpt_pp ops(argc, argv);
-	//ops >> Option('h', "help", _help, help); //help函数定义修改
 	ops >> Option('h', "help", _help, "help");
 	for (GetOpt_pp::short_iterator it = ops.begin(); it != ops.end(); ++it)
 	{
@@ -265,7 +232,7 @@ int main(int argc, char* argv[])
 	ss << tol;
 	ss >> tolerance;
 
-	ops >> Option('r', "rules", rule, "HC,NOPSC,NOPS,RDBE,lewis");
+	ops >> Option('r', "rules", rule/*, "HC,NOPSC,NOPS,RDBE,lewis"*/);
 	vector<char*> rules= split_char(rule, ',');
 
 	ops >> Option('c', "charge", _charge, "0");
@@ -479,6 +446,51 @@ int main(int argc, char* argv[])
 			ops >> Option("K", K, "0-0");
 			vector<string> sep = split(K, '-');
 			compositions.push_back("K");
+			int tmp;
+			ss.clear();
+			ss << sep[0];
+			ss >> tmp;
+			mini.push_back(tmp);
+			ss.clear();
+			ss << sep[1];
+			ss >> tmp;
+			maxi.push_back(tmp);
+		}
+		if (*it == "13C")
+		{
+			ops >> Option("13C", CX, "0-0");
+			vector<string> sep = split(CX, '-');
+			compositions.push_back("(13)C");
+			int tmp;
+			ss.clear();
+			ss << sep[0];
+			ss >> tmp;
+			mini.push_back(tmp);
+			ss.clear();
+			ss << sep[1];
+			ss >> tmp;
+			maxi.push_back(tmp);
+		}
+		if (*it == "D")
+		{
+			ops >> Option("D", D, "0-0");
+			vector<string> sep = split(D, '-');
+			compositions.push_back("D");
+			int tmp;
+			ss.clear();
+			ss << sep[0];
+			ss >> tmp;
+			mini.push_back(tmp);
+			ss.clear();
+			ss << sep[1];
+			ss >> tmp;
+			maxi.push_back(tmp);
+		}
+		if (*it == "15N")
+		{
+			ops >> Option("15N", NX, "0-0");
+			vector<string> sep = split(NX, '-');
+			compositions.push_back("(15)N");
 			int tmp;
 			ss.clear();
 			ss << sep[0];

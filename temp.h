@@ -15,7 +15,6 @@ public:
 		int c = min((hiMass-pre_mass)/masses[N-1],maximum[N-1]);
 		if (N == elcount)
 		{
-		//omp_set_num_threads(1);
 		#pragma omp parallel for 
 			for (k = minimum[N-1]; k<=c; k++)
 			{
