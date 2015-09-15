@@ -3,12 +3,14 @@
 #include <malloc.h>
 #include <ctime>
 #include <string.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include "formula.h"
-#include "temp.h"
-#include <chrono>
+#include "meta.h"
 
+#if defined __GNUC__
 #pragma GCC diagnostic ignored "-Wwrite-strings"
+#endif
 
 using namespace std;
 
@@ -175,7 +177,7 @@ void calculation(double currentmass, vector<char*> compositions, int mincount[],
 	PFG(p_result, elcount, mincount, maxcount, _elmass, current, pre_mass, loMass, hiMass);
 
 	FILE *fpt; 
-	fopen_s(&fpt,"result.txt","w");
+	fpt=fopen("result.txt","w");
 	fprintf(fpt,"formula\t mass\t mz\t error\t rdbe\n");
 	char *temp = new char[100];
 	char *s = new char[100];
@@ -222,8 +224,8 @@ void calculation(double currentmass, vector<char*> compositions, int mincount[],
 
 			if(p_result->data[i*elcount + j] !=0)
 			{
-				sprintf_s(s, 100, "%s%d",compositions[j], p_result->data[i*elcount + j]);
-				strncat_s(temp, 100, s, strlen(s));
+				sprintf(s, "%s%d",compositions[j], p_result->data[i*elcount + j]);
+				strncat(temp, s, strlen(s));
 			}
 
 			count.push_back(p_result->data[i*elcount + j]);

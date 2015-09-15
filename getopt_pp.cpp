@@ -23,12 +23,13 @@ GetOpt_pp: Yet another C++ version of getopt.
 #define environ (*_NSGetEnviron())
 #elif _WIN32
 #include <Stdio.h>
+#include <stdlib.h>
 #define environ _environ
 #else
 #include <unistd.h>
 #endif
 
-#include "getoptpp/getopt_pp.h"
+#include "getopt_pp.h"
 
 namespace GetOpt
 {

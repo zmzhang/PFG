@@ -3,17 +3,22 @@
 #include <map>
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
 #include <ctime>
-#include "formula.h"
-#include "temp.h"
 #include <sstream>
 #include <fstream>
 #include <iomanip>
-#include "getoptpp/getopt_pp.h"
-#include "getoptpp/getopt_pp_standalone.h"
+
+#include "getopt_pp.h"
+#include "formula.h"
+#include "meta.h"
 
 using namespace GetOpt;
-#pragma GCC diagnostic ignored "-Wwrite-strings"
+
+#if defined __GNUC__
+	#pragma GCC diagnostic ignored "-Wwrite-strings"
+#endif
 
 double mz(double currentmass,int finalcharge, int currentcharge, char *agentformula="H",int agentcharge=1)
 	//calculate the m/z value for given mass and charge

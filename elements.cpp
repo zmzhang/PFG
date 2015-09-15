@@ -5,6 +5,9 @@
 
 using namespace std;
 
+#if defined __GNUC__
+#pragma GCC diagnostic ignored "-Wwrite-strings"
+#endif
 
 map<string, ellist> elements;
 
