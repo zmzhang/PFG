@@ -121,8 +121,9 @@ int frules(char *string, int countC, int countH, int countO, int countN, int cou
 				}
 			}
 		}
+		return true;
 	}
-	return true;
+	return false;
 }
 
 vector<string> split(string str, char delimiter) {
@@ -139,18 +140,16 @@ vector<string> split(string str, char delimiter) {
 
 vector<char*> split_char(string str, char delimiter) {
 	vector<char*> internal;
-	stringstream ss(str); // Turn the string into a stream.
+	stringstream ss(str); 
 	string tok;
-
+	
 	while(getline(ss, tok, delimiter)) {
+		char* x = new char[10];
 		stringstream s1;
-		char* x = new char[100];
 		s1<<tok;
 		s1>>x;
 		internal.push_back(x);
-		delete []x;
 	}
-
 	return internal;
 }
 void help()
@@ -237,7 +236,7 @@ int main(int argc, char* argv[])
 	ss << tol;
 	ss >> tolerance;
 
-	ops >> Option('r', "rules", rule/*, "HC,NOPSC,NOPS,RDBE,lewis"*/);
+	ops >> Option('r', "rules", rule, "HC,NOPSC,NOPS,RDBE,lewis");
 	vector<char*> rules= split_char(rule, ',');
 
 	ops >> Option('c', "charge", _charge, "0");
