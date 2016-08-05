@@ -25,7 +25,6 @@ double mz(double currentmass,int finalcharge, int currentcharge, char *agentform
 {
 	double agentMass;
 	double massMo = 0.0;
-	double massAv = 0.0;
 
 	if(strcmp(agentformula,"e") == 0)
 	{
@@ -513,11 +512,11 @@ int main(int argc, char* argv[])
 
 	int mincount[30];
 	int maxcount[30];
-	for (int i = 0; i < mini.size(); i++)
+	for (unsigned int i = 0; i < mini.size(); i++)
 	{
 		mincount[i] = mini[i];
 	}
-	for (int i = 0; i < maxi.size(); i++)
+	for (unsigned int i = 0; i < maxi.size(); i++)
 	{
 		maxcount[i] = maxi[i];
 	}
