@@ -62,5 +62,5 @@ double *elmass(vector<char*> compositions, int size);
 double delta(double measuredMass, double countedMass, char units[]);
 void PFG(result *p_result, int elcount, int minimum[], int maximum[], double masses[], int *current, double pre_mass,double loMass, double hiMass);
 void calculation(double currentmass, vector<char*> compositions, int mincount[], int maxcount[], vector<char*> rules, float tolerance=1,  
-		  int charge = 0, char *agentformula = "H", int agentcharge=1, char units[]="ppm");
+		  int charge = 0, char *agentformula = "H", int agentcharge=1, string unit="ppm", string outfile="");
 #endif

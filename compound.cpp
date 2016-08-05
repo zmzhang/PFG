@@ -202,6 +202,7 @@ int main(int argc, char* argv[])
 	string _cmass;
 	string C, H, N, O, P, S, Na, Si, F, Cl, Br, I, K, CX, D, NX;
 
+
 	vector<char*> compositions;
 	vector<int> mini;
 	vector<int> maxi;
@@ -225,11 +226,19 @@ int main(int argc, char* argv[])
 		//vec.clear();
 	}
 
+
+	string outfile;
+	ops >> Option('f', "file", outfile, "");
+
+	string unit;
+	ops >> Option('u', "unit", unit, "ppm");
+
 	ops >> Option('m', "mass", _cmass, "500");
 	double cmass;
 	ss.clear();
 	ss << _cmass;
 	ss >> cmass;
+
 
 	ops >> Option('t', "tolerance", tol, "5");
 	float tolerance;
@@ -520,7 +529,7 @@ int main(int argc, char* argv[])
 	{
 		maxcount[i] = maxi[i];
 	}
-	calculation(cmass, compositions, mincount, maxcount, rules, tolerance, charge, agentformula, agentcharge);
+	calculation(cmass, compositions, mincount, maxcount, rules, tolerance, charge, agentformula, agentcharge, unit, outfile);
 
 	delete []agentformula;
 

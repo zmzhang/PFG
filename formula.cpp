@@ -25,13 +25,13 @@ double *elmass(vector<char*> compositions, int size){
 	return _elmass;
 }
 
-double delta(double measuredMass, double countedMass, char units[]="ppm"){
+double delta(double measuredMass, double countedMass, string unit="ppm"){
 	// Calculate error between measured Mass and counted Mass in specified units.
-	if(strcmp(units,"ppm")==0)
+	if(strcmp(unit.c_str(),"ppm")==0)
 		return (measuredMass - countedMass) / countedMass*1000000;
-	else if(strcmp(units,"Da")==0)
+	else if(strcmp(unit.c_str(),"Da")==0)
 		return (measuredMass - countedMass);
-	else if(strcmp(units,"%")==0)
+	else if(strcmp(unit.c_str(),"%")==0)
 		return (measuredMass - countedMass) / countedMass*100;
 	else printf("Unknown units for delta!");
 	    return false;
@@ -65,22 +65,22 @@ void PFG(result *p_result, int elcount, int minimum[], int maximum[], double mas
 	}
 }
 
-void calculation(double currentmass, vector<char*> compositions, int mincount[], int maxcount[], vector<char*> rules, float tolerance, int charge, char *agentformula, int agentcharge, char units[])
+void calculation(double currentmass, vector<char*> compositions, int mincount[], int maxcount[], vector<char*> rules, float tolerance, int charge, char *agentformula, int agentcharge, string unit, string outfile)
 {
 	double _mz = mz(currentmass, 0, charge, agentformula, agentcharge);
 	int elcount = compositions.size();
 	double finalmass=_mz;
 	double loMass,hiMass;
-	if (strcmp(units,"ppm") == 0 && charge == 0){
+	if (strcmp(unit.c_str(),"ppm") == 0 && charge == 0){
 		loMass = finalmass - (finalmass/1000000) * tolerance;
 		hiMass = finalmass + (finalmass/1000000) * tolerance;
 	}
-	else if (charge != 0 && strcmp(units,"ppm") == 0)
+	else if (charge != 0 && strcmp(unit.c_str(),"ppm") == 0)
 	{
 		loMass = finalmass - abs(charge) * (finalmass/1000000) * tolerance;
 		hiMass = finalmass + abs(charge) * (finalmass/1000000) * tolerance;
 	}
-	else if (charge!=0 && strcmp(units,"Da")==0)
+	else if (charge!=0 && strcmp(unit.c_str(),"Da")==0)
 	{
 		loMass = finalmass - abs(charge) * tolerance;
 		hiMass = finalmass + abs(charge) * tolerance;
@@ -178,7 +178,20 @@ void calculation(double currentmass, vector<char*> compositions, int mincount[],
 	PFG(p_result, elcount, mincount, maxcount, _elmass, current, pre_mass, loMass, hiMass);
 
 	FILE *fpt; 
-	fpt=fopen("result.txt","w");
+	
+	if (outfile.size())
+	{
+		fpt = fopen(outfile.c_str(), "w");
+		if (fpt==NULL)
+		{
+			fpt = stdout;
+		}
+	} 
+	else
+	{
+		fpt = stdout;
+	}
+	
 	fprintf(fpt,"formula\t mass\t mz\t error\t rdbe\n");
 	char *temp = new char[100];
 	char *s = new char[100];
@@ -244,7 +257,7 @@ void calculation(double currentmass, vector<char*> compositions, int mincount[],
 			double mass = p_result->mass[i];
 			double _mass = mass;
 			double fmz = mz(_mass, charge, 0, agentformula, agentcharge);
-			double error = delta(currentmass, fmz, units);
+			double error = delta(currentmass, fmz, unit);
 			fprintf(fpt, "%s\t %f\t %f\t %f\t %f\n", temp, mass, fmz, error, rdbevalue);
 		}
 	}
