@@ -95,6 +95,7 @@ void calculation(double currentmass, vector<char*> compositions, int mincount[],
 
 	for(int i = 0; i < elcount; i++)
 	{
+		/*
 		if (strcmp(compositions[i], "C") == 0)
 		{
 			if (_mz < 500)
@@ -158,9 +159,8 @@ void calculation(double currentmass, vector<char*> compositions, int mincount[],
 				maxcount[i] = min(maxcount[i], 40);
 			}
 			else maxcount[i] = min(maxcount[i], 60);
-		}
+		}*/
 		maxcount[i] = min(maxcount[i], int(hiMass / _elmass[i]));
-
 	}
 
 	result *p_result = new result [1000000];
@@ -174,6 +174,7 @@ void calculation(double currentmass, vector<char*> compositions, int mincount[],
 		current[i] = mincount[i];
 	}
 	double pre_mass = 0.0;
+
 	PFG(p_result, elcount, mincount, maxcount, _elmass, current, pre_mass, loMass, hiMass);
 
 	FILE *fpt; 
