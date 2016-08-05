@@ -19,6 +19,11 @@ GetOpt_pp: Yet another C++ version of getopt.
 #ifndef GETOPT_PP_H
 #define GETOPT_PP_H
 
+#ifdef _MSC_VER 
+#pragma warning(push)
+#pragma warning(disable:4290 )
+#endif 
+
 #include <string>
 #include <vector>   // candidate to be removed
 #include <map>
@@ -741,5 +746,9 @@ class Environment
 };
 
 }
+
+#ifdef _MSC_VER 
+#pragma warning(pop)
+#endif
 
 #endif

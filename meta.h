@@ -12,7 +12,7 @@ class formula_generator{
 public:
 	static inline void  EXEC(result *p_result, int elcount, int minimum[], int maximum[], double masses[], int *current, double pre_mass, double loMass, double hiMass, int k)
 	{
-		int c = min((hiMass-pre_mass)/masses[N-1],maximum[N-1]);
+		int c = min(int((hiMass-pre_mass)/masses[N-1]),maximum[N-1]);
 		if (N == elcount)
 		{
 		#pragma omp parallel for 

@@ -31,6 +31,11 @@ GetOpt_pp: Yet another C++ version of getopt.
 
 #include "getopt_pp.h"
 
+#ifdef _MSC_VER 
+#pragma warning(push)
+#pragma warning(disable:4290 )
+#endif 
+
 namespace GetOpt
 {
 
@@ -306,3 +311,7 @@ GETOPT_INLINE bool GetOpt_pp::options_remain() const
 }
 
 }
+
+#ifdef _MSC_VER 
+#pragma warning(pop)
+#endif

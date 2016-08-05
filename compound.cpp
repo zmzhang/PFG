@@ -232,7 +232,7 @@ int main(int argc, char* argv[])
 	ss >> cmass;
 
 	ops >> Option('t', "tolerance", tol, "5");
-	int tolerance;
+	float tolerance;
 	ss.clear();
 	ss << tol;
 	ss >> tolerance;
