@@ -1,6 +1,6 @@
 ## PFG ##
 
-PFG is a parallel formula generator to calculate the possible elemental compositions for a given mass. PFG is implemented in C++.
+PFG is a parallel formula generator to calculate the possible elemental compositions for a given mass. PFG is implemented in C++. It can be compiled by MSVC and GCC easily and run smoothly in both Windows and Linux.
 
 ## Usage ##
 ```
