@@ -54,7 +54,7 @@ double mz(double currentmass,int finalcharge, int currentcharge, char *agentform
 static double GLHC[2]={0.2, 3};
 static double GLNOPSC[4]={2, 1.2, 0.32, 0.65};
 static double GLRDBE[2]={0, 40};
-int frules(char *string, int countC, int countH, int countO, int countN, int countP, int countS, double rdbevalue, 
+bool frules(char *string, int countC, int countH, int countO, int countN, int countP, int countS, double rdbevalue, 
 		   vector<char*> rules);
 
 //formula

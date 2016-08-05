@@ -55,10 +55,12 @@ double mz(double currentmass,int finalcharge, int currentcharge, char *agentform
 	return currentmass;
 }
 
-int frules(char *string, int countC, int countH, int countO, int countN, int countP, int countS, double rdbevalue, vector<char*> rules)
+bool frules(char *string, int countC, int countH, int countO, int countN, int countP, int countS, double rdbevalue, vector<char*> rules)
 	//Check formula rules for a given compound.
 {
 	int size = rules.size();
+	
+	if (size == 0) { return true; }
 
 	if(countC){
 		double ratioHC = countH / 1.000 / countC;
@@ -236,7 +238,8 @@ int main(int argc, char* argv[])
 	ss << tol;
 	ss >> tolerance;
 
-	ops >> Option('r', "rules", rule, "HC,NOPSC,NOPS,RDBE,lewis");
+	//ops >> Option('r', "rules", rule, "HC,NOPSC,NOPS,RDBE,lewis");
+	ops >> Option('r', "rules", rule, "");
 	vector<char*> rules= split_char(rule, ',');
 
 	ops >> Option('c', "charge", _charge, "0");

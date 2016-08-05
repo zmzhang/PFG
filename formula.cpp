@@ -232,7 +232,7 @@ void calculation(double currentmass, vector<char*> compositions, int mincount[],
 		}
 		rdbevalue = rdbe(compositions, count);
 	
-		int t=frules(temp, countC, countH, countO, countN, countP, countS, rdbevalue, rules);
+		bool t=frules(temp, countC, countH, countO, countN, countP, countS, rdbevalue, rules);
 		if(t == 1)
 		{
 			double mass = p_result->mass[i];
