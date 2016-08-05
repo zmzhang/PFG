@@ -223,10 +223,15 @@ void calculation(double currentmass, vector<char*> compositions, int mincount[],
 				countS = p_result->data[i*elcount + j];
 			}			
 
-			if(p_result->data[i*elcount + j] !=0)
+			const unsigned int elnum = p_result->data[i*elcount + j];
+			if (elnum != 0)
 			{
-				sprintf(s, "%s%d",compositions[j], p_result->data[i*elcount + j]);
-				strncat(temp, s, strlen(s));
+				strncat(temp, compositions[j], strlen(compositions[j]));
+				if (elnum != 1)
+				{
+					sprintf(s, "%d", p_result->data[i*elcount + j]);
+					strncat(temp, s, strlen(s));
+				}
 			}
 
 			count.push_back(p_result->data[i*elcount + j]);
