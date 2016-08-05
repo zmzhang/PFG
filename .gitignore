@@ -6,3 +6,4 @@ Debug
 /.vs
 /PFG.sdf
 /PFG.exe
+/*.o
