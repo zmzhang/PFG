@@ -44,6 +44,28 @@ typedef struct{
 	double rdbe;
 }output;
 
+
+class ResultsWriter
+{
+public:
+	ResultsWriter(string outfile,  vector<char*> compositions, vector<char*> rules, int charge, char * agentformula, int agentcharge, double currentmass, string unit);
+	~ResultsWriter();
+	void writeResults();
+	result *p_result;
+	int m_poolSize;
+private:
+	string m_outfile;
+	vector<char*> m_compositions;
+	vector<char*> m_rules;
+	int m_charge;
+	char * m_agentformula;
+	int m_agentcharge;
+	double m_currentmass;
+	string m_unit;
+	int m_elcount;
+
+};
+
 //elements
 double elementmass(char *string);
 double rdbe(vector<char*> compositions, vector<int> count);
@@ -60,7 +82,7 @@ bool frules(char *string, int countC, int countH, int countO, int countN, int co
 //formula
 double *elmass(vector<char*> compositions, int size);
 double delta(double measuredMass, double countedMass, char units[]);
-void PFG(result *p_result, int elcount, int minimum[], int maximum[], double masses[], int *current, double pre_mass,double loMass, double hiMass);
+void PFG(ResultsWriter & writer, int elcount, int minimum[], int maximum[], double masses[], int *current, double pre_mass,double loMass, double hiMass);
 void calculation(double currentmass, vector<char*> compositions, int mincount[], int maxcount[], vector<char*> rules, float tolerance=1,  
 		  int charge = 0, char *agentformula = "H", int agentcharge=1, string unit="ppm", string outfile="");
 #endif

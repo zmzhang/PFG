@@ -39,27 +39,27 @@ double delta(double measuredMass, double countedMass, string unit="ppm"){
 
 
 
-void PFG(result *p_result, int elcount, int minimum[], int maximum[], double masses[], int *current, double pre_mass,double loMass, double hiMass)
+void PFG(ResultsWriter & writer, int elcount, int minimum[], int maximum[], double masses[], int *current, double pre_mass,double loMass, double hiMass)
 	//call the template metaprogramming
 {
 	int k = 0;
 	switch (elcount)
 	{
-		case 1:  formula_generator<1>::EXEC(p_result, elcount, minimum, maximum, masses, current, pre_mass, loMass, hiMass, k); break;
-		case 2:  formula_generator<2>::EXEC(p_result, elcount, minimum, maximum, masses, current, pre_mass, loMass, hiMass, k); break;
-		case 3:  formula_generator<3>::EXEC(p_result, elcount, minimum, maximum, masses, current, pre_mass, loMass, hiMass, k); break;
-		case 4:  formula_generator<4>::EXEC(p_result, elcount, minimum, maximum, masses, current, pre_mass, loMass, hiMass, k); break;
-		case 5:  formula_generator<5>::EXEC(p_result, elcount, minimum, maximum, masses, current, pre_mass, loMass, hiMass, k); break;
-		case 6:  formula_generator<6>::EXEC(p_result, elcount, minimum, maximum, masses, current, pre_mass, loMass, hiMass, k); break;
-		case 7:  formula_generator<7>::EXEC(p_result, elcount, minimum, maximum, masses, current, pre_mass, loMass, hiMass, k); break;
-		case 8:  formula_generator<8>::EXEC(p_result, elcount, minimum, maximum, masses, current, pre_mass, loMass, hiMass, k); break;
-		case 9:  formula_generator<9>::EXEC(p_result, elcount, minimum, maximum, masses, current, pre_mass, loMass, hiMass, k); break;
-		case 10: formula_generator<10>::EXEC(p_result, elcount, minimum, maximum, masses, current, pre_mass, loMass, hiMass, k); break;
-		case 11: formula_generator<11>::EXEC(p_result, elcount, minimum, maximum, masses, current, pre_mass, loMass, hiMass, k); break;
-		case 12: formula_generator<12>::EXEC(p_result, elcount, minimum, maximum, masses, current, pre_mass, loMass, hiMass, k); break;
-		case 13: formula_generator<13>::EXEC(p_result, elcount, minimum, maximum, masses, current, pre_mass, loMass, hiMass, k); break;
-		case 14: formula_generator<14>::EXEC(p_result, elcount, minimum, maximum, masses, current, pre_mass, loMass, hiMass, k); break;
-		case 15: formula_generator<15>::EXEC(p_result, elcount, minimum, maximum, masses, current, pre_mass, loMass, hiMass, k); break;
+		case 1:  formula_generator<1>::EXEC(writer, elcount, minimum, maximum, masses, current, pre_mass, loMass, hiMass, k); break;
+		case 2:  formula_generator<2>::EXEC(writer, elcount, minimum, maximum, masses, current, pre_mass, loMass, hiMass, k); break;
+		case 3:  formula_generator<3>::EXEC(writer, elcount, minimum, maximum, masses, current, pre_mass, loMass, hiMass, k); break;
+		case 4:  formula_generator<4>::EXEC(writer, elcount, minimum, maximum, masses, current, pre_mass, loMass, hiMass, k); break;
+		case 5:  formula_generator<5>::EXEC(writer, elcount, minimum, maximum, masses, current, pre_mass, loMass, hiMass, k); break;
+		case 6:  formula_generator<6>::EXEC(writer, elcount, minimum, maximum, masses, current, pre_mass, loMass, hiMass, k); break;
+		case 7:  formula_generator<7>::EXEC(writer, elcount, minimum, maximum, masses, current, pre_mass, loMass, hiMass, k); break;
+		case 8:  formula_generator<8>::EXEC(writer, elcount, minimum, maximum, masses, current, pre_mass, loMass, hiMass, k); break;
+		case 9:  formula_generator<9>::EXEC(writer, elcount, minimum, maximum, masses, current, pre_mass, loMass, hiMass, k); break;
+		case 10: formula_generator<10>::EXEC(writer, elcount, minimum, maximum, masses, current, pre_mass, loMass, hiMass, k); break;
+		case 11: formula_generator<11>::EXEC(writer, elcount, minimum, maximum, masses, current, pre_mass, loMass, hiMass, k); break;
+		case 12: formula_generator<12>::EXEC(writer, elcount, minimum, maximum, masses, current, pre_mass, loMass, hiMass, k); break;
+		case 13: formula_generator<13>::EXEC(writer, elcount, minimum, maximum, masses, current, pre_mass, loMass, hiMass, k); break;
+		case 14: formula_generator<14>::EXEC(writer, elcount, minimum, maximum, masses, current, pre_mass, loMass, hiMass, k); break;
+		case 15: formula_generator<15>::EXEC(writer, elcount, minimum, maximum, masses, current, pre_mass, loMass, hiMass, k); break;
 	default:
 		break;
 	}
@@ -163,44 +163,78 @@ void calculation(double currentmass, vector<char*> compositions, int mincount[],
 		maxcount[i] = min(maxcount[i], int(hiMass / _elmass[i]));
 	}
 
-	result *p_result = new result [1000000];
-	p_result->data = new int [1000000 * elcount];
-	p_result->len = 0;
-	p_result->mass = new double [1000000];
 	int *current = new int [elcount];
-
 	for (int i = 0; i < elcount; i++)
 	{
 		current[i] = mincount[i];
 	}
 	double pre_mass = 0.0;
 
-	PFG(p_result, elcount, mincount, maxcount, _elmass, current, pre_mass, loMass, hiMass);
 
-	FILE *fpt; 
-	
-	if (outfile.size())
+	ResultsWriter writer(outfile, compositions, rules, charge, agentformula, agentcharge, currentmass, unit);
+	PFG(writer, elcount, mincount, maxcount, _elmass, current, pre_mass, loMass, hiMass);
+	writer.writeResults();
+
+	delete []_elmass;
+	delete []current;
+}
+
+ResultsWriter::ResultsWriter(string outfile, vector<char*> compositions, vector<char*> rules, int charge, char * agentformula, int agentcharge, double currentmass, string unit)
+{
+	m_outfile = outfile;
+	m_compositions = compositions;
+	m_rules = rules;
+	m_charge = charge;
+	m_agentformula = agentformula;
+	m_agentcharge = agentcharge;
+	m_currentmass = currentmass;
+	m_unit = unit;
+
+	m_elcount = compositions.size();
+
+	m_poolSize = 1000000;
+
+	p_result = new result[m_poolSize];
+	p_result->data = new int[m_poolSize * m_elcount];
+	p_result->len = 0;
+	p_result->mass = new double[m_poolSize];
+
+}
+
+ResultsWriter::~ResultsWriter()
+{
+	delete[]p_result->mass;
+	delete[]p_result->data;
+	delete[]p_result;
+}
+
+
+void ResultsWriter::writeResults()
+{
+	FILE *fpt;
+
+	if (m_outfile.size())
 	{
-		fpt = fopen(outfile.c_str(), "w");
-		if (fpt==NULL)
+		fpt = fopen(m_outfile.c_str(), "w");
+		if (fpt == NULL)
 		{
 			fpt = stdout;
 		}
-	} 
+	}
 	else
 	{
 		fpt = stdout;
 	}
-	
-	fprintf(fpt,"formula\t mass\t mz\t error\t rdbe\n");
+
+	fprintf(fpt, "formula\t mass\t mz\t error\t rdbe\n");
 	char *temp = new char[100];
 	char *s = new char[100];
 
 	//start = clock();
-	for(int i = 0; i < p_result->len; i++)
+	for (int i = 0; i < p_result->len; i++)
 	{
-		temp[0]='\0';
-		s[0]='\0';
+		temp[0] = '\0';
+		s[0] = '\0';
 		int countC = 0;
 		int countH = 0;
 		int countO = 0;
@@ -209,64 +243,59 @@ void calculation(double currentmass, vector<char*> compositions, int mincount[],
 		int countS = 0;
 		double rdbevalue;
 		vector<int> count;
-		for(int j = 0; j < elcount; j++)
+		for (int j = 0; j < m_elcount; j++)
 		{
-			if (strcmp(compositions[j], "C") == 0)
+			if (strcmp(m_compositions[j], "C") == 0)
 			{
-				countC = p_result->data[i*elcount + j];
+				countC = p_result->data[i*m_elcount + j];
 			}
-			else if (strcmp(compositions[j], "H") == 0)
+			else if (strcmp(m_compositions[j], "H") == 0)
 			{
-				countH = p_result->data[i*elcount + j];
+				countH = p_result->data[i*m_elcount + j];
 			}
-			else if (strcmp(compositions[j], "O") == 0)
+			else if (strcmp(m_compositions[j], "O") == 0)
 			{
-				countO = p_result->data[i*elcount + j];
+				countO = p_result->data[i*m_elcount + j];
 			}
-			else if (strcmp(compositions[j], "N") == 0)
+			else if (strcmp(m_compositions[j], "N") == 0)
 			{
-				countN = p_result->data[i*elcount + j];
+				countN = p_result->data[i*m_elcount + j];
 			}
-			else if (strcmp(compositions[j], "P") == 0)
+			else if (strcmp(m_compositions[j], "P") == 0)
 			{
-				countP = p_result->data[i*elcount + j];
+				countP = p_result->data[i*m_elcount + j];
 			}
-			else if (strcmp(compositions[j], "S") == 0)
+			else if (strcmp(m_compositions[j], "S") == 0)
 			{
-				countS = p_result->data[i*elcount + j];
-			}			
+				countS = p_result->data[i*m_elcount + j];
+			}
 
-			const unsigned int elnum = p_result->data[i*elcount + j];
+			const unsigned int elnum = p_result->data[i*m_elcount + j];
 			if (elnum != 0)
 			{
-				strncat(temp, compositions[j], strlen(compositions[j]));
+				strncat(temp, m_compositions[j], strlen(m_compositions[j]));
 				if (elnum != 1)
 				{
-					sprintf(s, "%d", p_result->data[i*elcount + j]);
+					sprintf(s, "%d", p_result->data[i*m_elcount + j]);
 					strncat(temp, s, strlen(s));
 				}
 			}
 
-			count.push_back(p_result->data[i*elcount + j]);
+			count.push_back(p_result->data[i*m_elcount + j]);
 		}
-		rdbevalue = rdbe(compositions, count);
-	
-		bool t=frules(temp, countC, countH, countO, countN, countP, countS, rdbevalue, rules);
-		if(t == 1)
+		rdbevalue = rdbe(m_compositions, count);
+
+		bool t = frules(temp, countC, countH, countO, countN, countP, countS, rdbevalue, m_rules);
+		if (t == 1)
 		{
 			double mass = p_result->mass[i];
 			double _mass = mass;
-			double fmz = mz(_mass, charge, 0, agentformula, agentcharge);
-			double error = delta(currentmass, fmz, unit);
+			double fmz = mz(_mass, m_charge, 0, m_agentformula, m_agentcharge);
+			double error = delta(m_currentmass, fmz, m_unit);
 			fprintf(fpt, "%s\t %f\t %f\t %f\t %f\n", temp, mass, fmz, error, rdbevalue);
 		}
 	}
 	fclose(fpt);
-	delete []temp;
-	delete []s;
-	delete []_elmass;
-	delete []p_result->mass;
-	delete []p_result->data;
-	delete []p_result;
-	delete []current;
+	delete[]temp;
+	delete[]s;
 }
