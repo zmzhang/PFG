@@ -161,8 +161,10 @@ void help()
 		<<"-h or --help       The help screen." <<endl
 		<<"-m mass            Set mass." <<endl
 		<<"-t tol             Set tolerance to tol 'ppm' ( default 5 )." << endl
+		<<"-u unit            Set unit of tol, could be 'Da' or 'ppm' (default ppm)." << endl
 		<<"-c charge          Set charge to be calculated." << endl
 		<<"-r rules           Set rules to constrain formulas"<<endl
+		<<"-f file            Set filename to stored the generated formulas (default is stdout)." << endl
 		<<"--X a-b            Set atom range a (min) to b (max) of element X. "<<endl
 		<<"                   some of the valid elements:" << endl
 		<<"          X           key      mass(6 decimals shown)" << endl
