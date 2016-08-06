@@ -199,19 +199,6 @@ ResultsWriter::ResultsWriter(string outfile, vector<char*> compositions, vector<
 	p_result->len = 0;
 	p_result->mass = new double[m_poolSize];
 
-}
-
-ResultsWriter::~ResultsWriter()
-{
-	delete[]p_result->mass;
-	delete[]p_result->data;
-	delete[]p_result;
-}
-
-
-void ResultsWriter::writeResults()
-{
-	FILE *fpt;
 
 	if (m_outfile.size())
 	{
@@ -225,8 +212,21 @@ void ResultsWriter::writeResults()
 	{
 		fpt = stdout;
 	}
-
 	fprintf(fpt, "formula\t mass\t mz\t error\t rdbe\n");
+}
+
+ResultsWriter::~ResultsWriter()
+{
+	delete[]p_result->mass;
+	delete[]p_result->data;
+	delete[]p_result;
+	fclose(fpt);
+}
+
+
+void ResultsWriter::writeResults()
+{
+
 	char *temp = new char[100];
 	char *s = new char[100];
 
@@ -295,7 +295,6 @@ void ResultsWriter::writeResults()
 			fprintf(fpt, "%s\t %f\t %f\t %f\t %f\n", temp, mass, fmz, error, rdbevalue);
 		}
 	}
-	fclose(fpt);
 	delete[]temp;
 	delete[]s;
 }

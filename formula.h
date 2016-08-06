@@ -63,6 +63,7 @@ private:
 	double m_currentmass;
 	string m_unit;
 	int m_elcount;
+	FILE *fpt;
 
 };
 
