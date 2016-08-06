@@ -7,8 +7,10 @@ PFG is a parallel formula generator to calculate the possible elemental composit
 -h or --help       The help screen.
 -m mass            Set mass.
 -t tol             Set tolerance to tol 'ppm' ( default 5 ).
+-u unit            Set unit of tol, could be 'Da' or 'ppm' (default ppm).
 -c charge          Set charge to be calculated.
 -r rules           Set rules to constrain formulas
+-f file            Set filename to stored the generated formulas (default is stdout).
 --X a-b            Set atom range a (min) to b (max) of element X.
                    some of the valid elements:
           X           key      mass(6 decimals shown)
@@ -34,6 +36,6 @@ PFG is a parallel formula generator to calculate the possible elemental composit
 ```
 ## Example ##
 ```
-PFG  'Mesuximide' -m 203.0946 -t 5 --C 0-20 --H 0-40 --O 0-5 --N 0-5
+PFG  'Mesuximide' -m 203.0946 -t 5 --C 0-20 --H 0-40 --O 0-5 --N 0-5 -f test.txt
 ```
-the result were stored in the result.txt
+the result were stored in the test.txt
