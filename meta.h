@@ -20,7 +20,7 @@ public:
 			{
 				current[N-1] = k;
 				double current_mass_i= pre_mass+masses[N-1]*k;
-				int *current_i = new int [10];
+				int *current_i = new int [elcount];
 				for (int i=0;i<elcount;i++)
 				{
 					current_i[i]=current[i];
