@@ -212,7 +212,7 @@ ResultsWriter::ResultsWriter(string outfile, vector<char*> compositions, vector<
 	{
 		fpt = stdout;
 	}
-	fprintf(fpt, "formula\t mass\t mz\t error\t rdbe\n");
+	fprintf(fpt, "formula\t mass\t mz\t mz_input\t error\t rdbe\n");
 }
 
 ResultsWriter::~ResultsWriter()
@@ -292,7 +292,7 @@ void ResultsWriter::writeResults()
 			double _mass = mass;
 			double fmz = mz(_mass, m_charge, 0, m_agentformula, m_agentcharge);
 			double error = delta(m_currentmass, fmz, m_unit);
-			fprintf(fpt, "%s\t %f\t %f\t %f\t %f\n", temp, mass, fmz, error, rdbevalue);
+			fprintf(fpt, "%s\t %f\t %f\t %f\t %f\t %f\n", temp, mass, fmz, m_currentmass, error, rdbevalue);
 		}
 	}
 	delete[]temp;
